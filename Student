@@ -1,0 +1,103 @@
+/**
+ * Created by dima- on 19.01.2016.
+ */
+//Класс реализующий сущность студента
+public class Student implements Comparable{
+    //Приватные свойства
+    private String name; //Свойство - имя
+    private float grade;//Свойство средняя оценка
+
+    //Перегрузка конструкторов
+    public Student( String name , float grade ) //Конструктор класса
+    {
+        this.setName( name ); //Вызов метода и передача параметра на проверку
+        this.setGrade( grade );//Вызов метода и передача параметра на проверку
+    };
+
+    public Student(){}; //Пустой конструктор
+
+    public int compareTo(Object obj) { //Реализация метода от интерфейса
+        Student entry = (Student) obj;
+
+        int result = name.compareTo(entry.name);
+        if(result != 0) {
+            return result;
+        }
+
+        result = (int)grade- (int)entry.getGrade();
+        if(result != 0) {
+            return (int) result / Math.abs( result );
+        }
+        return 0;
+    }
+
+    public boolean setName( String name  )//Метод установки имени , возвращает удачная ли была установка
+    {
+        boolean success = true; //объявление переменной
+
+        if( checkName( name ) != null ) this.name = name; //Визов метода проверки валидности имени, если все нормально устанавливаем
+        else success = false; // в противном случаи изменяем переменную
+        return success;//Возвращаем переменную
+    };
+
+    public boolean setGrade( float grade ) //Метод установки оценки, возвращает удачная ли была установка
+    {
+        boolean success = true; //объявление переменной
+
+        if( checkGrade( grade ) != -1 ) this.grade = grade;//Визов метода проверки валидности оценки, если все нормально устанавливаем
+        else success = false;// в противном случаи изменяем переменную
+        return success;//Возвращаем переменную
+    };
+
+    public String getName()
+    {
+        return this.name;
+    }; //Метод , который возвращает имя студента
+
+    public float getGrade()
+    {
+        return this.grade;
+    };//Метод , который возвращает оценку студента
+
+    public Student getObject()
+    {
+        return this;
+    }; //Метод , который возвращает студента(объект) студента
+
+    public String toString( int maxNameLength ) //Метод , который возвращает текстовое представление студента(имя , оценку)
+    {
+        String space = " "; //Сктроковая переменная пробела
+        StringBuilder data = new StringBuilder(); //Создание объекта (строка которая может изминяться)
+        int currentStrL = this.name.length(); //Получение длины имени
+        data.append("| "+this.name );
+        for(int j=0;j<maxNameLength - currentStrL;j++)  data.append( space );
+        data.append( " | "+this.grade+" |" );
+        return new String( data );
+    };
+
+    private static float checkGrade( float grade )
+    {
+        if( grade < 0 || grade > 100 )
+        {
+            System.out.println( "Eror.Can't set student's grade." );
+            return -1;
+        }
+        else return grade;
+    };
+
+    private static String checkName( String name )
+    {
+        if( name.length() < 3 || name.length() > 15 )
+        {
+            System.out.println("Eror,Undefined size of name.");
+            return null;
+        }
+        else if( name.toUpperCase().charAt(0) != name.charAt(0) )
+        {
+            System.out.println("Eror,First letter of the name must be in uppercase.");
+            return null;
+        }
+        else return name;
+    };
+}
+
