@@ -1,0 +1,172 @@
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import javax.swing.*;
+
+public class MainClass extends JFrame {
+
+
+    private static ArrayList<Student> students = new ArrayList<>();
+
+    private boolean sorted = false;
+    private String sortedHow = "inc";
+
+    public MainClass() {
+        super("Test frame");
+        createGUI();
+    }
+    public void createGUI() {
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+
+        JLabel labelName = new JLabel("Set name:");
+        labelName.setBounds(5, 5, 85, 30);
+        panel.add(labelName);
+
+        JTextField fieldName = new JTextField( 10 );
+        fieldName.setBounds(65, 5, 85, 30);
+        panel.add(fieldName);
+
+
+        JLabel labelGrade = new JLabel("Set grade:");
+        labelGrade.setBounds(160, 5, 85, 30);
+        panel.add(labelGrade);
+
+        JTextField fieldGrade = new JTextField( 5 );
+        fieldGrade.setBounds(230, 5, 85, 30);
+        panel.add(fieldGrade);
+
+        JButton btnAdd = new JButton("Add");
+        btnAdd.setBounds(330, 5, 75, 30);
+        panel.add( btnAdd );
+
+        JButton btnSortGrade = new JButton("Sort by grade");
+        btnSortGrade.setBounds(180, 65, 125, 20);
+        panel.add( btnSortGrade );
+
+        JButton btnSortName = new JButton("Sort by name");
+        btnSortName.setBounds(30, 65, 125, 20);
+        panel.add( btnSortName );
+
+        students.add( new Student("Богдан",67 ) );
+        students.add( new Student("Ярослав" , 78) );
+        students.add( new Student( "Вероніка", 98 ) );
+        students.add( new Student("Сергій",80 ) );
+        students.add( new Student("Данило",87 ) );
+        students.add( new Student("Михайло", 86 ) );
+        students.add( new Student("Владислав", 90 ) );
+        students.add( new Student("Олена", 82) );
+        students.add( new Student("Ксенія",85) );
+        students.add( new Student("Павло", 74) );
+        students.add( new Student("Дмитро",83 ) );
+
+        TableModel tableM = new TableModel( students );
+
+        JTable table = new JTable( tableM );
+        table.setPreferredScrollableViewportSize(new Dimension(200, 100) );
+        //table.setSize( new Dimension(200, 200)  );
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        getContentPane().add(scrollPane).setBounds(20,90,300,199);
+
+        getContentPane().add(panel);
+        setPreferredSize(new Dimension(440, 330));
+
+        btnAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                students.add(new Student( fieldName.getText() , Float.valueOf( fieldGrade.getText())) );
+                tableM.fireTableDataChanged();
+                fieldName.setText( "" );
+                fieldGrade.setText( "" );
+            }
+        });
+
+        btnSortGrade.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                sortByGradeInc();
+                tableM.fireTableDataChanged();
+            }
+        });
+
+        btnSortName.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                sortByName();
+                tableM.fireTableDataChanged();
+            }
+        });
+
+    }
+
+    private void sortByGradeInc()
+    {
+        sorted = true;
+
+        if( sortedHow.equals("inc") ) {
+          sortedHow = "dec";
+            boolean changes;
+            do {
+                changes = false;
+                for (int i = 0; i < students.size() - 1; i++) {
+                    if (students.get(i).getGrade() > students.get(i + 1).getGrade()) {
+                        Student _current = students.get(i);
+                        students.set(i, students.get(i + 1));
+                        students.set(i + 1, _current);
+                        changes = true;
+                    }
+                }
+
+            }
+            while (changes);
+        }else{
+
+            sortedHow = "inc";
+            boolean changes;
+            do {
+                changes = false;
+                for (int i = 0; i < students.size() - 1; i++) {
+                    if (students.get(i).getGrade() < students.get(i + 1).getGrade()) {
+                        Student _current = students.get(i);
+                        students.set(i, students.get(i + 1));
+                        students.set(i + 1, _current);
+                        changes = true;
+                    }
+                }
+
+            }
+            while (changes);
+
+        };
+    };
+
+    private void sortByName()
+    {
+        Student[] stds = new Student[ students.size() ];
+
+        for(int i=0;i<stds.length;i++){
+            stds[i] = students.get(i);
+        };
+        Arrays.sort( stds );
+
+        for(int i=0;i<stds.length;i++){
+            students.set( i , stds[i] );
+        };
+    };
+
+    public static void main(String[] args) {
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                JFrame.setDefaultLookAndFeelDecorated(true);
+                MainClass  frame = new MainClass();
+                frame.pack();
+                frame.setLocationRelativeTo(null);
+                frame.setVisible(true);
+            }
+        });
+    }
+}
